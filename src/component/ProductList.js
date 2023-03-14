@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState,useEffect } from 'react';
 import axios from "axios";
+import { Link } from 'react-router-dom';
 
 //pagination
 import ReactPaginate from "react-paginate";
@@ -28,6 +29,15 @@ const ProductList = () => {
         setPages(response.data.totalPage);
         setRows(response.data.totalRows);
     };
+
+    const deleteProduct = async (id)=>{
+        try {
+            await axios.delete(`http://localhost:5000/products/${id}`);
+            getProduct();
+        } catch (error) {
+            console.log(error);
+        }
+    }
 //console.log(getProduct);
 
 const changePage =({selected})=>{
@@ -43,6 +53,7 @@ const searchData = (e)=>{
     <div className="container mt-5">
         <div className='columns'>
             <div className="column is-centered">
+                <Link to={`add`} className="button is-succses mb-5">Add Product</Link>
                 <form onSubmit={searchData}>
                     <div className='field has-addons'>
                         <div className="control is-expanded">
@@ -64,6 +75,7 @@ const searchData = (e)=>{
                             <th>Name</th>
                             <th>Categori</th>
                             <th>Descripsi</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -73,6 +85,10 @@ const searchData = (e)=>{
                             <td>{product.name}</td>
                             <td>{product.categori}</td>
                             <td>{product.descrip}</td>
+                            <td>
+                                <Link to={`edit/${product.id}`} className='button is-small is-info'>Edit</Link>
+                                <button onClick={()=>deleteProduct(product.id)} className='button is-small is-danger'>Delete</button>
+                            </td>
                         </tr>
                         ))}
                     </tbody>
